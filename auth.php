@@ -5,9 +5,9 @@ session_regenerate_id(true);
 header('Access-Control-Allow-Origin: *');
 require_once 'libs/jsonRPCClient.php';
 
-$cluster  = Cassandra::cluster('127.0.0.1') ->withCredentials("challenges_rw", "Private_access_challenges")
+$cluster  = Cassandra::cluster($_ENV["DB_HOST"]) ->withCredentials("challenges_rw", "Private_access_challenges")
                 ->build();
-$ml_cluster  = Cassandra::cluster('127.0.0.1') ->withCredentials("session_rw", "Private_access_sessions")
+$ml_cluster  = Cassandra::cluster($_ENV["DB_HOST"]) ->withCredentials("session_rw", "Private_access_sessions")
                 ->build();
 $keyspace  = 'comchain';
 $session  = $cluster->connect($keyspace);

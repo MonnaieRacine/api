@@ -27,7 +27,7 @@ function checkSign($uid, $signature, $pubkeyid){
 function saveAddress($uid, $token, $pubkeyid, $currency, $adresse, $maxAccounts){
     if (checkSign($uid, $token, $pubkeyid)=="OK"){ 
         // Connect to Cassandra
-        $cluster  = Cassandra::cluster('127.0.0.1')->withCredentials("members_rw", "Private_access_members_rw")->build();
+        $cluster  = Cassandra::cluster($_ENV["DB_HOST"])->withCredentials("members_rw", "Private_access_members_rw")->build();
         $keyspace  = strtolower($currency);
         
         $notAccepted = array("-", "_");

@@ -26,7 +26,7 @@ if (is_numeric($_GET['end'])){
  
 #$dbh = new PDO($dir) or die("cannot open database");
 
-$cluster  = Cassandra::cluster('127.0.0.1') 
+$cluster  = Cassandra::cluster($_ENV["DB_HOST"]) 
 		->withCredentials("transactions_ro", "Public_transactions") 
 		-> withDefaultPageSize(null)
                 ->build();

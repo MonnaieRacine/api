@@ -43,7 +43,7 @@ function getTransaction($hash, $gethRPC){
     try {
         $ret = getRPCResponse($gethRPC->eth_getTransactionByHash($hash),
         "pending");
-        $cluster  = Cassandra::cluster('127.0.0.1') ->withCredentials("transactions_ro", "Public_transactions")
+        $cluster  = Cassandra::cluster($_ENV["DB_HOST"]) ->withCredentials("transactions_ro", "Public_transactions")
                 ->build();
         $keyspace  = 'comchain';
         $session  = $cluster->connect($keyspace);
@@ -137,7 +137,7 @@ function getRPCResponse($result){
 // Lookup into the DB for a valid shop from the REQUEST parameters
 // TODO PROTECT AGAINST CQL injection
 function validateShop( $shop_id, $server_name){
-   $cluster  = Cassandra::cluster('127.0.0.1') ->withCredentials("transactions_ro", "Public_transactions")->build();
+   $cluster  = Cassandra::cluster($_ENV["DB_HOST"]) ->withCredentials("transactions_ro", "Public_transactions")->build();
    $keyspace  = 'comchain';
    $session  = $cluster->connect($keyspace);
    $query = "SELECT * FROM sellers  WHERE store_id = '$shop_id' AND server_name = '$server_name' ";  
@@ -159,7 +159,7 @@ function insertPendingShopTransaction($shop_id,$shop_ref,$transaction_ash,$deleg
    }
 
 //TODO change the table
-   $cluster  = Cassandra::cluster('127.0.0.1') ->withCredentials("webhook_rw", "Private_access_transactions")->build();
+   $cluster  = Cassandra::cluster($_ENV["DB_HOST"]) ->withCredentials("webhook_rw", "Private_access_transactions")->build();
    $keyspace  = 'comchain';
    $session  = $cluster->connect($keyspace);
    $query = "INSERT INTO webshop_transactions (hash, store_id, store_ref, status, $field_add) VALUES ('$transaction_ash','$shop_id','$shop_ref' $value_add)";  // Set old timestamp for the lock (tr_attempt_date)
@@ -168,7 +168,7 @@ function insertPendingShopTransaction($shop_id,$shop_ref,$transaction_ash,$deleg
 // Insert Pending Delegated transaction storing the delegate
 // TODO PROTECT AGAINST CQL injection
 function insertPendingDelegateTransaction($delegate,$transaction_ash){
-   $cluster  = Cassandra::cluster('127.0.0.1') ->withCredentials("webhook_rw", "Private_access_transactions")->build();
+   $cluster  = Cassandra::cluster($_ENV["DB_HOST"]) ->withCredentials("webhook_rw", "Private_access_transactions")->build();
    $keyspace  = 'comchain';
    $session  = $cluster->connect($keyspace);
    //TODO change the table
